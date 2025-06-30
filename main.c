@@ -23,12 +23,12 @@ int main(void)
         ss = get_next_line(fd);
     printf("%s\n",ss);
     free(ss);
-    ss = get_next_line(fd);
-    printf("%s\n",ss);
-    free(ss);
-    ss = get_next_line(fd);
-    printf("%s\n",ss);
-    free(ss);
+    //ss = get_next_line(fd);
+    //printf("%s\n",ss);
+    //free(ss);
+    //ss = get_next_line(fd);
+    //printf("%s\n",ss);
+    //free(ss);
     close(fd);
     return (0);
 }
