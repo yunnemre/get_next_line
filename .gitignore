@@ -1,0 +1,21 @@
+# Derleme dosyaları
+*.o
+*.out
+*.a
+
+# Editor klasörleri
+.vscode/
+.idea/
+
+# Geçici dosyalar
+*.swp
+*.log
+.DS_Store
+
+# libft.a veya ft_printf gibi build dosyaları
+libft.a
+libftprintf.a
+
+# tester files and main.c
+main.c
+yunn.txt
