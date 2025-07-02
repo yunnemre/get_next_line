@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 static char	*ft_next_stash(char *stash)
 {
@@ -21,10 +19,13 @@ static char	*ft_next_stash(char *stash)
 	char	*stash_temp;
 	int		i;
 
+	if (!ft_strchr(stash, '\n'))
+	{
+    	free(stash);
+    	return (ft_strdup(""));
+	}
 	i = 0;
 	stash_temp = ft_strchr(stash, '\n') + 1;
-	if (!*stash_temp)
-		return (ft_strdup(""));
 	size = ft_strlen(stash_temp);
 	res = malloc(size + 1);
 	if (!res)
@@ -34,6 +35,7 @@ static char	*ft_next_stash(char *stash)
 		res[i] = stash_temp[i];
 		i++;
 	}
+	res[i] = '\0';
 	free(stash);
 	return (res);
 }
@@ -44,12 +46,13 @@ static char	*ft_edit_stash(char *stash)
 	int		size;
 	int		i;
 
+	if (!ft_strchr(stash, '\n'))
+		return (ft_strdup(stash));
 	i = 0;
 	size = (ft_strchr(stash, '\n') + 1) - stash;
 	line = malloc(size + 1);
 	if (!line)
 		return (NULL);
-	
 	while (i < size)
 	{
 		line[i] = stash[i];
@@ -68,7 +71,7 @@ static char	*ft_readline(int fd, char *stash)
 	if (!buff)
 		return (NULL);
 	bytes_read = 1;
-	while (!ft_strchr(stash, '\n') && bytes_read != 0)
+	while ((stash == NULL || !ft_strchr(stash, '\n')) && bytes_read != 0)
 	{
 		bytes_read = read(fd, buff, BUFFER_SIZE);
 		if (bytes_read == -1)
@@ -77,11 +80,10 @@ static char	*ft_readline(int fd, char *stash)
 			return (NULL);
 		}
 		buff[bytes_read] = '\0';
-		if (!stash || !*stash)
+		if (!stash && *buff)
 			stash = ft_strdup(buff);
-		else
+		else if (stash && *buff)
 			stash = ft_strjoin(stash, buff);
-		
 	}
 	free(buff);
 	return (stash);
@@ -91,17 +93,22 @@ char	*get_next_line(int fd)
 {
 	static char	*stash;
 	char		*line;
-	
+
 	line = NULL;
 	stash = ft_readline(fd, stash);
+	if (!stash || *stash == '\0')
+	{
+		free(stash);
+		return (NULL);
+	}
 	line = ft_edit_stash(stash);
 	if (!line && !ft_strchr(line, '\n'))
 		return (NULL);
 	stash = ft_next_stash(stash);
-	if (!stash || *stash == '\0')
-    {  
-	    free(stash);
-	    stash = NULL;
-    }
+	if (!stash || !*stash)
+	{
+		free(stash);
+		stash = NULL;
+	}
 	return (line);
 }
